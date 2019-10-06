@@ -1,0 +1,32 @@
+.experience {
+  font-size: 1.8em;
+  margin-bottom: 100px;
+  &-preview{
+    float: left;
+  }
+  &-content {
+
+  }
+  &-title {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 2px; 
+  }
+  &-technology {
+    background: blue;
+    border-radius: 3px;
+    margin-right: 5px;
+    color: white;
+  }
+  &-description{
+    border-radius: 3px;
+    background: adjust-color(#000000, $lightness: -30%, $alpha: -0.8);
+    &-item{
+      display: block;
+      padding-bottom: 2px;
+    }
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}
