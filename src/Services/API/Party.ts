@@ -16,11 +16,7 @@ export const PartyService = {
 				payload.params,
 			);
 		} catch (error) {
-			response = {
-				id: '',
-				moves: [],
-				isStartedWithX: true,
-			};
+			response = {};
 		}
 
 		return response;
@@ -29,19 +25,17 @@ export const PartyService = {
 		payload: PartyModel.UpdatePartyPayload,
 	): Promise<PartyModel.GetBackendResponse> => {
 		let response: PartyModel.GetBackendResponse;
-
+		console.log("updating parties", payload)
 		try {
 			response = await Http.Request<PartyModel.GetBackendResponse>(
 				'POST',
-				`/party/${payload.params.identifier}`,
-				payload.params,
+				`/party/${payload.params.identifier}/move`,
+				{},
+				{ vector: payload.params.vector }
 			);
 		} catch (error) {
-			response = {
-				id: '',
-				moves: [],
-				isStartedWithX: true,
-			};
+			console.log(error)
+			response = {};
 		}
 
 		return response;
@@ -58,11 +52,7 @@ export const PartyService = {
 				payload.params,
 			);
 		} catch (error) {
-			response = {
-				id: '',
-				moves: [],
-				isStartedWithX: true,
-			};
+			response = {};
 		}
 
 		return response;

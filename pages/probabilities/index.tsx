@@ -6,7 +6,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 //#region Interface Imports
 import { IProbaPage, IStore } from '@Interfaces';
-import { Menu } from '@Components';
+import { Menu, Diagram } from '@Components';
 import { HomeActions } from '@Actions';
 //#endregion Interface Imports
 
@@ -23,6 +23,7 @@ export class ProbaPage extends React.Component<IProbaPage.IProps, IProbaPage.ISt
 		return (
 			<div className="probabilities">
 				<Menu title="TIC TAC TOE - PROBABILITIES" />
+				<Diagram />
 			</div>
 		);
 	}

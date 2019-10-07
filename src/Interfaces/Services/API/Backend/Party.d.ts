@@ -10,7 +10,7 @@ declare namespace PartyModel {
 
 	export interface UpdatePartyPayload {
 		identifier: any;
-		params: BackendPayload;
+		params: any;
 	}
 
 	export interface GetBackendResponse extends BackendResponse {}

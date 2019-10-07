@@ -1,5 +1,5 @@
 {
-	"name": "next-boilerplate",
+	"name": "packetaitestfront",
 	"version": "1.0.0",
 	"description": "",
 	"main": "app/server.js",
@@ -13,6 +13,7 @@
 		"cli": "node ./project-cli/dist/index.js a",
 		"postinstall": "cd project-cli && npm i && npm run build",
 		"test": "jest --coverage",
+		"watch": "jest --watch --coverage",
 		"lint": "eslint -c .eslintrc.js --ext .ts,.tsx {app,pages,src}/**",
 		"format": "eslint -c .eslintrc.js --ext .ts,.tsx --fix {app,pages,src}/**"
 	},
@@ -24,6 +25,7 @@
 		"@zeit/next-typescript": "^1.1.1",
 		"awesome-typescript-loader": "^5.2.1",
 		"cross-env": "^5.2.0",
+		"d3": "^5.12.0",
 		"file-loader": "^4.2.0",
 		"http-proxy-middleware": "^0.19.1",
 		"isomorphic-unfetch": "^3.0.0",

@@ -16,7 +16,7 @@ import CrossComponent from './cross';
 //#endregion Interface Imports
 
 class Game extends React.Component<IGame.IProps, IGame.IState> {
-	public state: { winner: any; gameDialog: any; turn: string; gameLocked: boolean; gameEnded: boolean; board: any[]; totalMoves: number; };
+	// public state: { id: string; winner: any; gameDialog: any; turn: string; gameLocked: boolean; gameEnded: boolean; board: any[]; totalMoves: number; };
 
 	constructor(props: IGame.IProps) {
 		super(props);
@@ -31,10 +31,12 @@ class Game extends React.Component<IGame.IProps, IGame.IState> {
 			totalMoves: 0,
 		};
 
+		console.log(this.props)
+		console.log(this.state)
+
 	}
 
 	componentDidMount() {
-		console.log(this.props)
 		this.start();
 	}
 
@@ -43,9 +45,9 @@ class Game extends React.Component<IGame.IProps, IGame.IState> {
 		this.props.CreateParty({});
 	}
 
-	update() {
-		console.log("update");
-		this.props.UpdateParty({});
+	update(updatedVector: Array) {
+		console.log("update",this.state);
+		this.props.UpdateParty({params:{identifier: this.props.id ,vector: updatedVector}});
 	}
 
 	end() {
@@ -53,54 +55,68 @@ class Game extends React.Component<IGame.IProps, IGame.IState> {
 		console.log("Game is finished");
 	}
 
-  clicked(boardKey: any) {
-		// console.log(this.state)
-    if(this.state.gameEnded || this.state.gameLocked) return;
+	
 
-    if(this.state.board[boardKey] == '') {
-      this.state.board[boardKey] = this.state.turn;
-      
-      this.state.turn = this.state.turn == 'X' ? 'O' : 'X',
-      
-			this.state.totalMoves++;
-			this.update();
+  clicked(boardKey: any) {
+		console.log(this.props)
+		let {totalMoves, turn, board, gameEnded, gameLocked} = this.state;
+    if(gameEnded || gameLocked) return;
+
+    if(board[boardKey] == '') {
+			board[boardKey] = turn;
+			console.log("before", turn)
+			turn = turn == 'X' ? 'O' : 'X';
+			console.log("after", turn)
+			totalMoves++;
+
+			this.setState({
+				board: board,
+				turn: turn,
+				totalMoves: totalMoves,
+			})
+			let updateVector = Array(9).fill(0)
+			updateVector[boardKey] = 1
+			this.update(updateVector);
     }
 
-    console.log(this.state.totalMoves);
+    console.log(totalMoves);
 
     var result = this.checkWinner();
 
     if(result == 'X') {
-      this.state.gameEnded = true;
       this.setState({
+				gameEnded: true,
         winner: 'X',
         gameDialog: 'Match won by X'
 			});
 			this.end();
-    } else if(result == 'O') {
-      this.state.gameEnded = true;
       this.setState({
+				gameEnded: true,
         winner: 'O',
         gameDialog: 'Match won by O'
 			});
 			this.end();
     } else if(result == 'draw') {
-      this.state.gameEnded = true;
       this.setState({
+				gameEnded: true,
         winner: 'draw',
         gameDialog: 'Match is drawn'
 			});
 			this.end();
     }
     
-    if(this.state.turn == 'O' && !this.state.gameEnded) {
-      this.state.gameLocked = true;
+    if(turn == 'O' && !gameEnded) {
+			this.setState({
+				gameLocked: true
+			})
       setTimeout(()=> {
         do {
-          var random = Math.floor(Math.random()*9);
-        } while(this.state.board[random] != '');
-        this.state.gameLocked = false;
-        this.clicked(random);
+					var random = Math.floor(Math.random()*9);
+				} while(board[random] != '');
+				this.setState({
+					gameLocked: false
+				})
+				this.clicked(random);
       }, 1000);
 		}
 		this.forceUpdate()
@@ -121,10 +137,11 @@ class Game extends React.Component<IGame.IProps, IGame.IState> {
   }
 
 	public displaySquare(index: any) {
+		const {board} = this.state;
 		// console.log("index", index)
 		// console.log("state", this.state)
 		// console.log("item", this.state.board[index])
-		switch (this.state.board[index]) {
+		switch (board[index]) {
 			case "X":
 					return(
 						<div>
@@ -145,12 +162,13 @@ class Game extends React.Component<IGame.IProps, IGame.IState> {
 	}
 
 	public render(): JSX.Element {
+		const { gameDialog, board }  = this.state;
 		return (
 			<div className="Game">
-				<div id="status">{this.state.gameDialog}</div>
+				<div id="status">{gameDialog}</div>
 				<div id="board" >
 					{
-						this.state.board.map((_item, index) => 
+						board.map((_item, index) => 
 								<div className="square" key={index} onClick={() => { this.clicked(index)}}>
 									{ this.displaySquare(index) }
 								</div>

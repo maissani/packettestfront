@@ -9,7 +9,18 @@ import { IAction, IGame } from '@Interfaces';
 /**
  * INITIAL_STATE
 */
-const INITIAL_STATE: IGame.IStateProps = { };
+const INITIAL_STATE: IGame.IStateProps = { 
+	id: "",
+	isStartedWithx: true,
+	moves: [],
+	turn: 'X',
+	winner: undefined,
+	gameDialog: undefined,
+	board: Array(9).fill(''),
+	gameLocked: false,
+	gameEnded: false,
+	totalMoves: 0,
+};
 
 type IMapPayload = IGame.Actions.IMapPayload;
 

@@ -4,6 +4,7 @@ export { IHomePage } from '@Interfaces/Pages/Home.d.ts';
 export { IProbaPage } from '@Interfaces/Pages/Proba.d.ts';
 
 // COMPONENT INTERFACES
+export { IDiagram } from '@Interfaces/Components/Diagram.d.ts';
 export { IGame } from '@Interfaces/Components/Game.d.ts';
 export { IHeading } from '@Interfaces/Components/Heading.d.ts';
 export { IMenu } from '@Interfaces/Components/Menu.d.ts';

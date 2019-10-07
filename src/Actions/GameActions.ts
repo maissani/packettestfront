@@ -13,7 +13,6 @@ import { IGame } from '@Interfaces';
 
 import { PartyService } from '@Services';
 
-
 /**
  * ACTIONS
 */
@@ -35,22 +34,19 @@ export const GameActions = {
 		});
 
 		dispatch({
-			payload: {
-				image: result,
-			},
+			payload: result,
 			type: ActionConsts.Game.SetReducer,
 		});
 	},
 
 	UpdateParty: (payload: IGame.Actions.IUpdatePartyPayload) => async (dispatch: Dispatch) => {
+		console.log(payload)
 		const result = await PartyService.UpdateParty({
 			params: payload.params,
 		});
 
 		dispatch({
-			payload: {
-				image: result,
-			},
+			payload: result,
 			type: ActionConsts.Game.SetReducer,
 		});
 	},
@@ -61,9 +57,7 @@ export const GameActions = {
 		});
 
 		dispatch({
-			payload: {
-				image: result,
-			},
+			payload: result,
 			type: ActionConsts.Game.SetReducer,
 		});
 	},
@@ -74,9 +68,7 @@ export const GameActions = {
 		});
 
 		dispatch({
-			payload: {
-				image: result,
-			},
+			payload: result,
 			type: ActionConsts.Game.SetReducer,
 		});
 	},
