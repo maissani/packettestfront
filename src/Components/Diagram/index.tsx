@@ -23,6 +23,7 @@ class Diagram extends React.Component<IDiagram.IProps, IDiagram.IState> {
 		this.state = {
 			width: 700,
 			height: 500,
+			mock: [[0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,1,0 ],[0,0,0,0,0,0,1,0,0]]
 		};
 		this.graph = React.createRef();
 	}
@@ -41,68 +42,94 @@ class Diagram extends React.Component<IDiagram.IProps, IDiagram.IState> {
 			const Node = d3.hierarchy.prototype.constructor;
 			const root = new Node;
 			const nodes = [root];
-			const links = [];
-		
+			const bluelinks = [];
+			const redlinks = [];
+
 			layoutTree(root);
 		
-			let link = svg.append("g")
-					.attr("fill", "none")
-					.attr("stroke", "#000")
-				.selectAll(".link");
-		
-			let node = svg.append("g")
-					.attr("stroke", "#fff")
-					.attr("stroke-width", 2)
-				.selectAll(".node");
-		
-			const interval = d3.interval(() => {
-				if (nodes.length >= 500) return interval.stop();
-		
-				// Add a new node to a random parent.
-				const parent = nodes[Math.random() * nodes.length | 0];
-				const child = Object.assign(new Node, {parent, depth: parent.depth + 1});
-				if (parent.children) parent.children.push(child);
-				else parent.children = [child];
-				nodes.push(child);
-				links.push({source: parent, target: child});
-		
+		let redLink = svg.append("g")
+			.attr("fill", "none")
+			.attr("stroke", "#F00")
+			.selectAll(".link");
+	
+		let blueLink = svg.append("g")
+			.attr("fill", "none")
+			.attr("stroke", "#00F")
+			.selectAll(".link");
+
+		let node = svg.append("g")
+			.attr("stroke", "#fff")
+			.attr("stroke-width", 2)
+			.selectAll(".node");
+				
+		for (var i = 0; i < 8; i++) {
+				const parent = nodes[i];
+				const childX = Object.assign(new Node, {parent, depth: parent.depth + 1});
+				const childO = Object.assign(new Node, {parent, depth: parent.depth + 1});
+				if (parent.children) {
+					parent.children.push(childX)
+					parent.children.push(childO)
+				} else parent.children = [childX, childO];
+				nodes.push(childX);
+				nodes.push(childO);
+				bluelinks.push({source: parent, target: childX});
+				redlinks.push({source: parent, target: childO});
+		}
+
 				// Recompute the layout.
-				layoutTree(root);
+		layoutTree(root);
 		
 				// Add entering nodes in the parent’s old position.
-				node = node.data(nodes);
-				node = node.enter().append("circle")
-						.attr("class", "node")
-						.attr("r", 4)
-						.attr("cx", d => d.parent ? d.parent.px : d.px = d.x)
-						.attr("cy", d => d.parent ? d.parent.py : d.py = d.y)
-					.merge(node);
+		node = node.data(nodes);
+		node = node.enter().append("circle")
+			.attr("class", "node")
+			.attr("r", 4)
+			.attr("cx", d => d.parent ? d.parent.px : d.px = d.x)
+			.attr("cy", d => d.parent ? d.parent.py : d.py = d.y)
+			.merge(node);
+
+		// Add entering links in the parent’s old position.
+		blueLink = blueLink.data(bluelinks);
+		redLink = redLink.data(redlinks);
+
+		svg.append("svg:defs").append("svg:marker")
+			.attr("id", "triangle")
+			.attr("refX", 15)
+			.attr("refY", 6)
+			.attr("markerWidth", 60)
+			.attr("markerHeight", 60)
+			.attr("orient", "auto")
+			.append("path")
+			.attr("d", "M 0 0 12 6 0 12 3 6")
+			.style("fill", "black");
+
+		blueLink = blueLink.enter().insert("path", ".node")
+			.attr("class", "link")
+			.attr("d", d => {
+				const o = {x: d.source.px, y: d.source.py};
+				return renderLink({source: o, target: o});
+			}).attr("marker-end", "url(#triangle)")
+			.merge(blueLink);
+
+		redLink = redLink.enter().insert("path", ".node")
+			.attr("class", "link")
+			.attr("d", d => {
+				const o = {x: d.source.px, y: d.source.py};
+				return renderLink({source: o, target: o});
+			}).attr("marker-end", "url(#triangle)")
+			.merge(redLink);	
+		// Transition nodes and links to their new positions.
+		const t = svg.transition()
+			.duration(duration);
 		
-				// Add entering links in the parent’s old position.
-				link = link.data(links);
-				link = link.enter().insert("path", ".node")
-						.attr("class", "link")
-						.attr("d", d => {
-							const o = {x: d.source.px, y: d.source.py};
-							return renderLink({source: o, target: o});
-						})
-					.merge(link);
-		
-				// Transition nodes and links to their new positions.
-				const t = svg.transition()
-						.duration(duration);
-		
-				link.transition(t)
-						.attr("d", renderLink);
-		
-				node.transition(t)
-						.attr("cx", d => d.px = d.x)
-						.attr("cy", d => d.py = d.y);
-			}, duration);
-		
-			 // invalidation.then(() => interval.stop());
-		
-			return svg.node();
+		blueLink.transition(t)
+			.attr("d", renderLink);
+		redLink.transition(t)
+			.attr("d", renderLink);
+		node.transition(t)
+			.attr("cx", d => d.px = d.x)
+			.attr("cy", d => d.py = d.y);
+		return svg.node();
 	}
 
 	componentDidMount() {
